@@ -18,6 +18,8 @@ pub const gtps = struct {
 
         pub fn pollEvents(self: *Server, timeout: u32) !void {
             while (try self.enet_host.pollEvents(timeout)) |event| {
+                _ = event.peer;
+                var packet = event.packet;
                 switch (event.type) {
                     .connect => {
                         std.log.debug("A client has connected.", .{});
@@ -27,7 +29,7 @@ pub const gtps = struct {
                     },
                     .receive => {
                         std.log.debug("A client has sent a packet.", .{});
-                        event.packet.?.destroy();
+                        packet.?.destroy();
                     },
                 }
             }

@@ -14,8 +14,9 @@ pub const enet = struct {
     pub const ENetPacket = struct {
         c_enet_packet: [*c]c_enet.ENetPacket,
 
-        pub fn destroy(self: *const ENetPacket) void {
+        pub fn destroy(self: *ENetPacket) void {
             c_enet.enet_packet_destroy(self.c_enet_packet);
+            self.c_enet_packet = null;
         }
     };
 
@@ -54,7 +55,7 @@ pub const enet = struct {
             self.c_enet_host.*.checksum = c_enet.enet_crc32;
         }
 
-        pub fn useRangeCoder(self: *const ENetHost) !void {
+        pub fn useRangeCoder(self: *ENetHost) !void {
             if (c_enet.enet_host_compress_with_range_coder(self.c_enet_host) != 0) {
                 return ENetError.CompressionSetupFailure;
             }
